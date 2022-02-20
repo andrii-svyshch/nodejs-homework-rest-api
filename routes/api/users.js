@@ -40,8 +40,7 @@ router.patch(
       const resultUpload = path.join(avatarsDir, newFileName);
       await fs.rename(tempUpload, resultUpload);
       const avatarURL = path.join(
-        `${req.protocol}` + ":",
-        req.headers.host,
+        `${req.protocol}://${req.headers.host}`,
         "public",
         "avatars",
         newFileName
