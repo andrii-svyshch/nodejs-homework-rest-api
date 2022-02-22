@@ -10,7 +10,7 @@ router.get("/", authenticate, async (req, res, next) => {
   try {
     const { page = 1, limit = 20, favorite } = req.query;
     if (isNaN(page) || isNaN(limit)) {
-      throw new createError(400, "Page or limits not a number");
+      throw createError(400, "Page or limits not a number");
     }
     const skip = (page - 1) * limit;
     const { _id } = req.user;
@@ -34,14 +34,14 @@ router.get("/:id", authenticate, async (req, res, next) => {
   try {
     const { id } = req.params;
     if (!Types.ObjectId.isValid(id)) {
-      throw new createError(400, "invalid ID");
+      throw createError(400, "invalid ID");
     }
     const result = await Contact.find(
       { _id: id, owner: req.user._id },
       "-createdAt -updatedAt"
     );
     if (!result) {
-      throw new createError(404, "Not found");
+      throw createError(404, "Not found");
     }
     res.json(result);
   } catch (error) {
@@ -53,7 +53,7 @@ router.post("/", authenticate, async (req, res, next) => {
   try {
     const { error } = schemas.add.validate(req.body);
     if (error) {
-      throw new createError(400, "missing required name field");
+      throw createError(400, "missing required name field");
     }
     const data = { ...req.body, owner: req.user._id };
     const result = await Contact.create(data);
@@ -67,7 +67,7 @@ router.delete("/:id", authenticate, async (req, res, next) => {
   try {
     const { id } = req.params;
     if (!Types.ObjectId.isValid(id)) {
-      throw new createError(400, "invalid ID");
+      throw createError(400, "invalid ID");
     }
 
     const result = await Contact.findOneAndRemove({
@@ -75,7 +75,7 @@ router.delete("/:id", authenticate, async (req, res, next) => {
       owner: req.user._id,
     });
     if (!result) {
-      throw new createError(404, "Not found");
+      throw createError(404, "Not found");
     }
     res.json({ message: "contact deleted" });
   } catch (error) {
@@ -88,11 +88,11 @@ router.put("/:id", authenticate, async (req, res, next) => {
     const { error } = schemas.add.validate(req.body);
 
     if (error) {
-      throw new createError(400, error.message);
+      throw createError(400, error.message);
     }
     const { id } = req.params;
     if (!Types.ObjectId.isValid(id)) {
-      throw new createError(400, "invalid ID");
+      throw createError(400, "invalid ID");
     }
     const result = await Contact.findOneAndUpdate(
       {
@@ -106,7 +106,7 @@ router.put("/:id", authenticate, async (req, res, next) => {
       }
     ).populate("owner", "email");
     if (!result) {
-      throw new createError(404, "Not found");
+      throw createError(404, "Not found");
     }
     res.json(result);
   } catch (error) {
@@ -118,11 +118,11 @@ router.patch("/:id/favorite", authenticate, async (req, res, next) => {
   try {
     const { error } = schemas.updateFavorite.validate(req.body);
     if (error) {
-      throw new createError(400, "missing field favorite");
+      throw createError(400, "missing field favorite");
     }
     const { id } = req.params;
     if (!Types.ObjectId.isValid(id)) {
-      throw new createError(400, "invalid ID");
+      throw createError(400, "invalid ID");
     }
     const result = await Contact.findOneAndUpdate(
       {
@@ -136,7 +136,7 @@ router.patch("/:id/favorite", authenticate, async (req, res, next) => {
       }
     ).populate("owner", "email");
     if (!result) {
-      throw new createError(404, "Not found");
+      throw createError(404, "Not found");
     }
     res.json(result);
   } catch (error) {
