@@ -44,7 +44,7 @@ router.post("/verify", async (req, res, next) => {
       subject: "Email confirmation",
       html: `<a target="_blank" href='http://localhost:3000/api/users/verify/${user.verificationToken}'>Confirm email</a>`,
     };
-    sendMail(mail);
+    await sendMail(mail);
     res.json({ message: "Verification email sent" });
   } catch (error) {
     console.log(error);
